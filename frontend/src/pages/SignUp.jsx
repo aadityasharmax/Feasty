@@ -8,6 +8,8 @@ import { serverUrl } from "../App";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase.js"
 import {ClipLoader} from "react-spinners"
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice.js";
 
 const SignUp = () => {
   const primaryColor = "#ff4d2d";
@@ -23,6 +25,7 @@ const SignUp = () => {
   const[password, setPassword] = useState("");  
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
@@ -31,7 +34,7 @@ const SignUp = () => {
         const result = await axios.post(`${serverUrl}/api/auth/signup`,{
             fullName, email, mobile, password, role
         },{withCredentials: true});
-        console.log(result)
+        dispatch(setUserData(result.data))
         setError("")
         setLoading(false)
         navigate('/signin')
@@ -58,6 +61,7 @@ const handleGoogleAuth = async () => {
         mobile, 
         role
     },{withCredentials: true});
+    dispatch(setUserData(axiosResult.data))
     setError("")
     // navigate('/')
     } catch (error) {
@@ -178,7 +182,9 @@ const handleGoogleAuth = async () => {
           </label>
           <div className="flex gap-2">
             {["user","owner","deliveryBoy"].map((r) => (
-                <button className="flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer" 
+                <button
+                key={r}
+                className="flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer" 
                 onClick={() => setRole(r)} 
                 
                 style={
