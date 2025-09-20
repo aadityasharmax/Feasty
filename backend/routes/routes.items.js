@@ -6,8 +6,8 @@ import { upload } from '../middleware/multer.js';
 
 const itemRouter = express.Router()
 
-userRouter.post("/add-item", isAuth, upload.single("image") ,addItem)
-userRouter.post("/edit-item/:itemId", isAuth, upload.single("image") ,editItem)
+itemRouter.post("/add-item", isAuth, upload.single("image") ,addItem)
+itemRouter.post("/edit-item/:itemId", isAuth, upload.single("image") ,editItem)
 
 
 

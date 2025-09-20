@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/routes.auth.js';
 import userRouter from './routes/routes.user.js';
 import cors from 'cors';
+import shopRoutes from './routes/routes.shop.js';
+import itemRouter from './routes/routes.items.js';
 
 
 const app = express();
@@ -18,6 +20,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
+app.use("api/shop", shopRoutes)
+app.use("api/item",itemRouter)
 
 
 
