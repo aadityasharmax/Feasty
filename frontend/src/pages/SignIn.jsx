@@ -34,6 +34,7 @@ const SignIn = () => {
         setLoading(false)
         setError("")  
         dispatch(setUserData(result.data))
+        navigate('/')
     } catch (error) {
       setError(error.response.data.message);
       setLoading(false)
@@ -52,7 +53,7 @@ const SignIn = () => {
       },{withCredentials: true});
       dispatch(setUserData(axiosResult.data))
       setError("")
-      // navigate('/')
+      navigate('/')
       } catch (error) {
         setError(error.response.data.message);
       }
