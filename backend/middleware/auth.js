@@ -11,6 +11,10 @@ const isAuth = (req, res, next) => {
     if(!decoded){
         return res.status(400).json({message:"Token not verified"})
     }
+
+    req.userId = decoded.id; 
+
+      
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {

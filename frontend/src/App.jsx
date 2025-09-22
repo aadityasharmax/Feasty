@@ -10,6 +10,7 @@ import useGetCity from './hooks/useGetCity'
 import useGetMyShop from './hooks/useGetMyShop'
 import CreateEditShop from './pages/CreateEditShop'
 import OwnerDashboard from './components/OwnerDashboard'
+import AddItem from "../src/pages/AddItem.jsx"
 export const serverUrl = "http://localhost:3000"
 
 const App = () => {
@@ -25,6 +26,10 @@ const App = () => {
       <Route path='/forgotpassword' element={!userData ? <ForgotPassword/>: <Navigate to={"/"}/>} />
       <Route path='/' element={userData?<Home/>:<Navigate to={"/signin"}/>} />
       <Route path='/create-edit-shop' element={<CreateEditShop/>}/>
+      <Route path='/add-food' element={<AddItem/>}/>
+
+      {/* // element={userData?<AddItem/>:<Navigate to={"/signin"}/> */}
+
     
     </Routes>
   )

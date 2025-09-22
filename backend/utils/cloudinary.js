@@ -11,7 +11,9 @@ const uploadOnCloudinary = async (file) => {
     const result = await cloudinary.uploader.upload(file);
 
     // this find the file and deletes it
-    fs.unlinkSync(file);
+    if (fs.existsSync(file)) {
+      fs.unlinkSync(file); // delete only if exists
+    }
 
     return result.secure_url;
   } catch (error) {

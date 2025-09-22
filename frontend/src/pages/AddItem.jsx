@@ -7,17 +7,19 @@ import { setMyShopData } from "../redux/ownerSlice";
 import axios from "axios";
 import { serverUrl } from "../App";
 
-const CreateEditShop = () => {
+const AddItem = () => {
   const navigate = useNavigate();
 
   const { myShopData } = useSelector((state) => state.owner);
-  const { city, state, currentAdd } = useSelector((state) => state.user);
-  const [name, setName] = useState(myShopData?.name || "");
-  const [address, setAddress] = useState(myShopData?.address || currentAdd);
-  const [City, setCity] = useState(myShopData?.city || city);
-  const [State, setState] = useState(myShopData?.state || state);
-  const [frontendImage, setFrontendImage] = useState(myShopData?.image || null);
+  const [name, setName] = useState("")
+  const[price,setPrice] = useState(0)
+  const [category,setCategory] = useState("")
+  const [foodType, setFoodType] = useState("veg")
+  const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
+
+  const categories = ["Snacks","Main Course","Desserts","Pizza","Burgers","Sandwiches","South Indian","North Indian","Chinese","Fast Food","Others"]
+
   const dispatch = useDispatch();
 
   const handleImage = async (e) => {
@@ -30,16 +32,16 @@ const CreateEditShop = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("shopName", name);
-      formData.append("city", City);
-      formData.append("state", State);
-      formData.append("address", address);
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("category", category);
+      formData.append("foodType", foodType);
       if (backendImage) {
         formData.append("image", backendImage);
       }
 
       const result = await axios.post(
-        `${serverUrl}/api/shop/create-edit`,
+        `${serverUrl}/api/item/add-item`,
         formData,
         { withCredentials: true }
       );
@@ -67,7 +69,7 @@ const CreateEditShop = () => {
           </div>
 
           <div className="text-3xl font-extrabold text-gray-900">
-            {myShopData ? "Edit Shop" : "Add Shop"}
+            Add Food
           </div>
         </div>
 
@@ -79,7 +81,7 @@ const CreateEditShop = () => {
             <input
               type="text"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Enter shop name"
+              placeholder="Enter food name"
               onChange={(e) => setName(e.target.value)}
               value={name}
             />
@@ -87,7 +89,7 @@ const CreateEditShop = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Shop Image
+              Food Image
             </label>
             <input
               type="file"
@@ -107,46 +109,61 @@ const CreateEditShop = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                City
-              </label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="Enter City"
-                onChange={(e) => setCity(e.target.value)}
-                value={City}
-              />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                State
-              </label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="Enter state"
-                onChange={(e) => setState(e.target.value)}
-                value={State}
-              />
-            </div>
-          </div>
+          {/* price */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address
+              Enter Price (in rupees)
             </label>
             <input
-              type="text"
+              type="number"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Enter shop address"
-              onChange={(e) => setAddress(e.target.value)}
-              value={address}
+              placeholder="Enter food price"
+              onChange={(e) => setPrice(e.target.value)}
+              value={price}
             />
           </div>
+
+          {/* category */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Select category
+            </label>
+            <select
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              onChange={(e) => setCategory(e.target.value)}
+              value={category}
+            >
+
+            <option value="">Select Category</option>
+            {categories.map((cate,index) => (
+                <option value={cate} key={index}>{cate}</option>
+            ))}
+            </select>
+          </div>
+
+
+          {/* foodType */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Select food type
+            </label>
+            <select
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              onChange={(e) => setFoodType(e.target.value)}
+              value={foodType}
+            >
+                <option value="veg">Veg</option>
+                <option value="non-veg">Non Veg</option>
+        
+            </select>
+          </div>
+
 
           <button className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadowlg transition-all cursor-pointer">
             Save
@@ -157,4 +174,4 @@ const CreateEditShop = () => {
   );
 };
 
-export default CreateEditShop;
+export default AddItem;

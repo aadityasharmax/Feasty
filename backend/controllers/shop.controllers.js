@@ -2,6 +2,8 @@ import Shop from "../models/shop.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
 export const createShopOrEdit = async (req, res) => {
+  console.log("Body:", req.body);
+    console.log("UserId:", req.userId);
   try {
     const { shopName, city, state, address, items } = req.body;
     let image;
@@ -32,7 +34,7 @@ export const createShopOrEdit = async (req, res) => {
       },{new:true});
     }
 
-    await shop.populate("owner");
+    await shop.populate("owner items");
     return res.status(201).json(shop);
   } catch (error) {
     return res.status(500).json({ message: `Create shop error ${error}` });
