@@ -11,6 +11,7 @@ import useGetMyShop from './hooks/useGetMyShop'
 import CreateEditShop from './pages/CreateEditShop'
 import OwnerDashboard from './components/OwnerDashboard'
 import AddItem from "../src/pages/AddItem.jsx"
+import EditItem from './pages/EditItem.jsx'
 export const serverUrl = "http://localhost:3000"
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
       <Route path='/' element={userData?<Home/>:<Navigate to={"/signin"}/>} />
       <Route path='/create-edit-shop' element={<CreateEditShop/>}/>
       <Route path='/add-food' element={<AddItem/>}/>
+      <Route path='/edit-item/:itemId' element={<EditItem/>}/>
 
       {/* // element={userData?<AddItem/>:<Navigate to={"/signin"}/> */}
 

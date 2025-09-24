@@ -9,6 +9,8 @@ import OwnerItemCard from "./OwnerItemCard";
 const OwnerDashboard = () => {
   const { myShopData } = useSelector((state) => state.owner);
   const navigate = useNavigate();
+
+  
   return (
     <div className="w-full min-h-screen bg-[#fff9f6] flex flex-col items-center">
       <Nav />
@@ -37,7 +39,7 @@ const OwnerDashboard = () => {
       )}
 
       {myShopData && (
-        <div className="w-[700px] h-[500px] flex flex-col items-center gap-4 px-2 sm:px-6">
+        <div className="w-full h-full flex flex-col items-center gap-4 px-2 sm:px-6">
           <h1
             className="text-2xl sm:text-3xl text-gray-900 flex items-center gap-3 mt-4
         text-center
@@ -98,9 +100,9 @@ const OwnerDashboard = () => {
               </div>
             )}
 
-            {myShopData.items.length > 0 && <div>
+            {myShopData.items.length > 0 && <div className="flex flex-col items-center gap-4 w-full max-w-3xl">
               {myShopData.items.map((item,index) => (
-                <OwnerItemCard/>
+                <OwnerItemCard data={item} key={index}/>
               ))}
               </div>}
           

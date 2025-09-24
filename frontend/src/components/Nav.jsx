@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { serverUrl } from "../App/";
 import { setUserData } from "../redux/userSlice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
+  const navigate = useNavigate()
   const { userData, city } = useSelector((state) => state.user);
   const {myShopData} = useSelector((state) => state.owner)
   const [showPopUp, setShowPopUp] = useState(false);
@@ -85,12 +87,16 @@ const Nav = () => {
           <>
 
           {myShopData && <>
-           <button className="hidden md:flex items-center gap-2 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d]">
+           <button className="hidden md:flex items-center gap-2 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d]"
+           onClick={() => navigate('/add-food')}
+           >
               <FaPlus size={20}/>
               <span>Add Food Item</span>
             </button>
 
-             <button className="md:hidden flex items-center gap-2 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d]">
+             <button className="md:hidden flex items-center gap-2 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d]"
+             onClick={() => navigate('/add-food')}
+             >
               <FaPlus size={20}/>
             </button>
           </>}
@@ -101,7 +107,9 @@ const Nav = () => {
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px] ">0</span>
             </div>
 
-            <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium">
+            <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] font-medium"
+            
+            >
               <TbReceiptRupee size={20}/>
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px] ">0</span>
             </div>
@@ -137,9 +145,11 @@ const Nav = () => {
         {showPopUp == true && (
           <div className="fixed top-[80px] right-[10px] md:right-[10%] lg:right-[25%] w[180px] bg-white shadow-2xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]">
             <div className="text-[17px] font-semibold">{userData.fullName}</div>
-            <div className="md:hidden text-[#ff4d2d] font-semi-bold cursor-pointer">
+            {userData.role == "user" && <div className="md:hidden text-[#ff4d2d] font-semi-bold cursor-pointer">
               My Orders
             </div>
+             }
+            
             <div
               className="text-[#ff4d2d] font-semibold cursor-pointer"
               onClick={handleLogout}

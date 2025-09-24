@@ -28,7 +28,12 @@ export const addItem = async (req, res) => {
 
     shop.items.push(item._id)
     await shop.save()
-    await shop.populate("items owner")
+    await shop.populate("owner")
+    
+    await shop.populate({
+      path:"items",
+      options:{sort:{updatedAt:-1}}
+    })
 
 
     return res.status(201).json(shop);
@@ -51,7 +56,7 @@ export const editItem = async (req, res) => {
       image = await uploadOnCloudinary(req.file.path);
     }
 
-    const item = Item.findByIdAndUpdate(
+    const item = await Item.findByIdAndUpdate(
       itemId,
       {
         name,
@@ -67,8 +72,52 @@ export const editItem = async (req, res) => {
       res.status(400).json({ message: "Item not found" });
     }
 
-    return res.status(200).json(item)
+    const shop = await Shop.findOne({owner:req.userId}).populate({
+      path:"items",
+      options:{sort:{updatedAt:-1}}
+    })
+    return res.status(200).json(shop)
   } catch (error) {
     res.status(500).json({ message: `Item edit error ${error}` });
   }
 };
+
+export const getItemById = async (req,res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    const item = await Item.findById(itemId)
+    if(!item){
+      return res.status(400).json({message:`Item not found error at getItemById`})
+    }
+
+    return res.status(200).json(item)
+
+  } catch (error) {
+     res.status(500).json({ message: `Get item By id error ${error}` });
+  }
+} 
+
+export const deleteItem = async (req,res) => {
+  try {
+    const itemId = req.params.itemId
+    const item = await Item.findByIdAndDelete(itemId)
+    if(!item){
+      return res.status(400).json({message:`Item not found`})
+    }
+
+    const shop = await Shop.findOne({owner:req.userId})
+    shop.items = shop.items.filter(i => i.toString() !== item._id.toString());
+    await shop.save()
+    await shop.populate("items")
+    await shop.populate({
+      path:"items",
+      options:{sort:{updatedAt:-1}}
+    })
+
+    return res.status(200).json(shop)
+
+  } catch (error) {
+    res.status(500).json({ message: `Delete item error ${error}` });
+  }
+}
