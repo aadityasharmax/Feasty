@@ -38,39 +38,35 @@ const UserDashboard = () => {
   };
 
   useEffect(() => {
+  if (!cateScrollRef.current || !shopScrollRef.current) return;
+
+  const handleCateScroll = () => {
+    updateButton(cateScrollRef, setShowGetRefLeft, setShowGetRefRight);
+  };
+  const handleShopScroll = () => {
+    updateButton(shopScrollRef, setShowLeftShopButton, setShowRightShopButton);
+  };
+
+  // Initial check
+  handleCateScroll();
+  handleShopScroll();
+
+  // Add listeners
+  cateScrollRef.current.addEventListener("scroll", handleCateScroll);
+  shopScrollRef.current.addEventListener("scroll", handleShopScroll);
+
+  // Cleanup safely
+  return () => {
     if (cateScrollRef.current) {
-      updateButton(cateScrollRef, setShowGetRefLeft, setShowGetRefRight);
-      updateButton(
-        shopScrollRef,
-        setShowLeftShopButton,
-        setShowRightShopButton
-      );
-      cateScrollRef.current.addEventListener("scroll", () => {
-        updateButton(cateScrollRef, setShowGetRefLeft, setShowGetRefRight);
-      });
-
-      shopScrollRef.current.addEventListener("scroll", () => {
-        updateButton(
-          shopScrollRef,
-          setShowLeftShopButton,
-          setShowRightShopButton
-        );
-      });
+      cateScrollRef.current.removeEventListener("scroll", handleCateScroll);
     }
+    if (shopScrollRef.current) {
+      shopScrollRef.current.removeEventListener("scroll", handleShopScroll);
+    }
+  };
+}, []);
 
-    return () => {
-      cateScrollRef.current.removeEventListener("scroll", () => {
-        updateButton(cateScrollRef, setShowGetRefLeft, setShowGetRefRight);
-      });
-      shopScrollRef.current.addEventListener("scroll", () => {
-        updateButton(
-          shopScrollRef,
-          setShowLeftShopButton,
-          setShowRightShopButton
-        );
-      });
-    };
-  }, []);
+
 
   return (
     <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-auto">

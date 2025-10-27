@@ -15,6 +15,7 @@ const Nav = () => {
   const navigate = useNavigate()
   const { userData, city } = useSelector((state) => state.user);
   const {myShopData} = useSelector((state) => state.owner)
+  const {cartItems} = useSelector((state) => state.user);
   const [showPopUp, setShowPopUp] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const dispatch = useDispatch();
@@ -117,9 +118,11 @@ const Nav = () => {
         ) :  (
           <>
           <div className="relative cursor-pointer">
-            <IoCart size={25} className="text-[#ff4d2d]" />
+            <IoCart size={25} className="text-[#ff4d2d]" 
+            onClick={() => navigate("/cart")}
+            />
             <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
-              0
+              {cartItems.length}  
             </span>
           </div>
 

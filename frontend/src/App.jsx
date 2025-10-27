@@ -14,6 +14,7 @@ import AddItem from "../src/pages/AddItem.jsx"
 import EditItem from './pages/EditItem.jsx'
 import useGetShopByCity from './hooks/useGetShopByCity.jsx'
 import useGetItemsByCity from './hooks/useGetItemsByCity.jsx'
+import CartPage from './pages/CartPage.jsx'
 export const serverUrl = "http://localhost:3000"
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
       <Route path='/create-edit-shop' element={<CreateEditShop/>}/>
       <Route path='/add-food' element={<AddItem/>}/>
       <Route path='/edit-item/:itemId' element={<EditItem/>}/>
+      <Route path='/cart' element={userData ?  <CartPage/> : <Navigate to={"/signin"} /> }/>
 
       {/* // element={userData?<AddItem/>:<Navigate to={"/signin"}/> */}
 
