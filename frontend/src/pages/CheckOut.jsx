@@ -4,19 +4,55 @@ import { IoChevronBackSharp } from "react-icons/io5";
 import { IoMdSearch } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import { TbCurrentLocation } from "react-icons/tb";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { useSelector } from "react-redux";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import { useDispatch, useSelector } from "react-redux";
 import "leaflet/dist/leaflet.css";
+import { setAddress, setLocation } from "../redux/mapSlice";
+import axios from "axios";
+const apiKey = import.meta.env.VITE_GEO_API_KEY;
+
+// RecenterMap component to update map view
+function RecenterMap({ location }) {
+  const map = useMap();
+  if (location.latitude && location.longitude) {
+    map.setView([location.latitude, location.longitude], 16, { animate: true });
+  }
+  return null;
+}
 
 const CheckOut = () => {
   const { location, address } = useSelector((state) => state.map);
   const { currentAdd } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onDragEnd = () => {
-    
+  const onDragEnd = (e) => {
+    const { lat, lng } = e.target._latlng;
+    dispatch(setLocation({ latitude: lat, longitude: lng }));
+    getAddressFromCoords({lat,lng});
+  };
+
+
+// Change address in input for location
+  const getAddressFromCoords = async ({ lat, lng }) => {
+    try {
+      const result = await axios.get(
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&format=json&apiKey=${apiKey}`
+      );
+      dispatch(setAddress(result.data.results[0].formatted));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      dispatch(setLocation({ latitude, longitude }));
+      getAddressFromCoords({ lat: latitude, lng: longitude });
+    });
   }
-  
 
   return (
     <div className="min-h-screen bg-[#fff9f6] flex items-center justify-center p-6">
@@ -43,7 +79,9 @@ const CheckOut = () => {
             <button className="bg-[#ff4d2d] hover:bg-[#e64526] text-white px-3 py-2 rounded-lg flex items-center justify-center cursor-pointer">
               <IoMdSearch size={17} />
             </button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center cursor-pointer">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center cursor-pointer"
+            onClick={getCurrentLocation}
+            >
               <TbCurrentLocation size={17} />
             </button>
           </div>
@@ -62,10 +100,11 @@ const CheckOut = () => {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
+                <RecenterMap location={location} />
                 <Marker
                   position={[location?.latitude, location?.longitude]}
                   draggable={true}
-                  eventHandlers={{dragend : onDragEnd}}
+                  eventHandlers={{ dragend: onDragEnd }}
                 />
               </MapContainer>
             </div>
