@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 *{
+    font-family: 'Poppins', sans-serif;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
