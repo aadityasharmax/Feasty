@@ -1,6 +1,6 @@
+import dotenv from 'dotenv';
 import express from 'express';
 dotenv.config()
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/routes.auth.js';
@@ -8,6 +8,7 @@ import userRouter from './routes/routes.user.js';
 import cors from 'cors';
 import shopRoutes from './routes/routes.shop.js';
 import itemRouter from './routes/routes.items.js';
+import orderRoutes from './routes/routes.order.js';
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/shop", shopRoutes)
 app.use("/api/item",itemRouter)
+app.use("/api/order",orderRoutes)
 
 
 

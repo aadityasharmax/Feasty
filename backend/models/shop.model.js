@@ -48,3 +48,4 @@ const Shop = mongoose.model("Shop",shopSchema)
 
 export default Shop
 
+

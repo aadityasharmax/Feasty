@@ -10,6 +10,11 @@ const shopOrderItemSchema = new mongoose.Schema(
       required: true,
     },
 
+    name:{
+      type:String,
+      required:true
+    },
+
     price: {
       type: Number,
     },
@@ -34,11 +39,17 @@ const shopOrderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    suTotal: {
+    subTotal: {
       type: Number,
       required: true,
     },
     shopOrderItems: [shopOrderItemSchema],
+    status:{
+      type:String,
+      enum:["pending","preparing","on the way","delivered","cancelled"],
+      default:"pending"
+      
+    }
   },
   { timestamps: true }
 );
@@ -66,7 +77,7 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    shopOrder: [shopOrderSchema],
+    shopOrders: [shopOrderSchema],
   },
   { timestamps: true }
 );
