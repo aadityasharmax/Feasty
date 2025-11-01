@@ -33,6 +33,19 @@ const userSchema = new mongoose.Schema(
 
     },
 
+    location:{
+      type:{
+        type:String,
+        enum:["Point"],
+        default:'Point'
+      },
+
+      coordinates:{
+        type:[Number],
+        default:[0,0]
+      }
+    },
+
     isOtpVerified : {
       type:Boolean,
       default:false
@@ -45,6 +58,9 @@ const userSchema = new mongoose.Schema(
 
 
 },{timestamps: true});
+
+// treat location  field as map 
+userSchema.index({location:'2dsphere'})
 
 const User = mongoose.model("User",userSchema,"users");
 export default User;

@@ -10,9 +10,10 @@ import { FaMobileScreenButton } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCreditCard } from "react-icons/fa";
 import "leaflet/dist/leaflet.css";
-import { setAddress, setLocation } from "../redux/mapSlice";
+import { setAddress, setLocation } from "../redux/mapSlice.js";
 import axios from "axios";
 import { serverUrl } from "../App";
+import { addMyOrder } from "../redux/userSlice.js";
 const apiKey = import.meta.env.VITE_GEO_API_KEY;
 
 
@@ -98,7 +99,7 @@ const CheckOut = () => {
         cartItems,
       },{withCredentials:true});
 
-      console.log(result.data);
+      dispatch(addMyOrder(result.data.order))
       navigate("/order-placed")
     } catch (error) {
       console.log(error)

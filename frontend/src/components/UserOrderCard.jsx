@@ -1,6 +1,7 @@
 import React from "react";
 
 const UserOrderCard = ({ data }) => {
+  if(!data) return null;
   console.log("order data", data);
 
   // Show date in  valid format DD/MM/YYYY
@@ -12,11 +13,13 @@ const UserOrderCard = ({ data }) => {
       year: "numeric",
     });
   };
+
+  const shortId = data._id ? data._id.slice(-6) : "------";
   return (
     <div className="bg-white rounded-lg shadow p-4 space-y-4">
       <div className="flex justify-between border-b pb-2">
         <div>
-          <p className="font-semibold">order #{data._id.slice(-6)}</p>
+          <p className="font-semibold">order #{shortId}</p>
 
           <p className="text-sm text-gray-500">
             Date: {formatDate(data.createdAt)}
@@ -42,7 +45,7 @@ const UserOrderCard = ({ data }) => {
           <p>{shopOrder.shop.shopName}</p>
 
           <div className="flex space-x-4 overflow-auto pb-2">
-            {shopOrder.shopOrderItems.map((item, map) => (
+            {shopOrder.shopOrderItems.map((item, index) => (
               <div
                 key={index}
                 className="flex-shrink-0 w-40 border rounded-lg p-2 bg-white"
