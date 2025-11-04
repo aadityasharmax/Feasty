@@ -12,7 +12,7 @@ const OwnerDashboard = () => {
 
   
   return (
-    <div className="w-full min-h-screen bg-[#fff9f6] flex flex-col items-center">
+    <div className="w-full min-h-screen flex flex-col items-center">
       <Nav />
 
       {!myShopData && (

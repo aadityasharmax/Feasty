@@ -134,11 +134,11 @@ export const getItemByCity = async (req, res) => {
       return res.status(400), json({ message: "Shop not found" });
     }
 
-    const shopIds = shops.map((shop) => shop._id)
+    const shopIds = shops.map((shop) => shop._id);
 
     const items = await Item.find({
-      shop:{$in:shopIds}
-    })
+      shop: { $in: shopIds },
+    });
 
     return res.status(200).json(items);
   } catch (error) {

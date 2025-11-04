@@ -3,7 +3,7 @@ import uploadOnCloudinary from "../utils/cloudinary.js";
 
 export const createShopOrEdit = async (req, res) => {
   console.log("Body:", req.body);
-    console.log("UserId:", req.userId);
+  console.log("UserId:", req.userId);
   try {
     const { shopName, city, state, address, items } = req.body;
     let image;
@@ -23,16 +23,19 @@ export const createShopOrEdit = async (req, res) => {
         image,
         owner: req.userId,
       });
-    }
-    else{
-        shop = await Shop.findByIdAndUpdate(shop._id,{
-        shopName,
-        city,
-        state,
-        address,
-        image,
-        owner: req.userId,
-      },{new:true});
+    } else {
+      shop = await Shop.findByIdAndUpdate(
+        shop._id,
+        {
+          shopName,
+          city,
+          state,
+          address,
+          image,
+          owner: req.userId,
+        },
+        { new: true }
+      );
     }
 
     await shop.populate("owner items");
@@ -43,44 +46,43 @@ export const createShopOrEdit = async (req, res) => {
   }
 };
 
-// cnotroller to get shop 
+// cnotroller to get shop
 
-export const getMyShop = async (req,res) => {
+export const getMyShop = async (req, res) => {
   try {
-    const shop = await Shop.findOne({owner:req.userId}).populate("owner").populate({
-      path:"items",
-      options:{sort:{updatedAt:-1}}
-    })
+    const shop = await Shop.findOne({ owner: req.userId })
+      .populate("owner")
+      .populate({
+        path: "items",
+        options: { sort: { updatedAt: -1 } },
+      });
 
-    if(!shop){
+    if (!shop) {
       return null;
     }
-    
-    return res.status(200).json(shop)
+
+    return res.status(200).json(shop);
   } catch (error) {
     return res.status(500).json({ message: `Get shop error ${error}` });
   }
-}
+};
 
-// controller to find shop whose city is same as user city 
+// controller to find shop whose city is same as user city
 
-
-export const getShopByCity = async (req,res) => {
+export const getShopByCity = async (req, res) => {
   try {
-    const {city} = req.params
+    const { city } = req.params;
 
     const shops = await Shop.find({
-      
-      city:{$regex: new RegExp(`^${city}$`, "i")} // matches both city user city and current city 
-    }).populate("items")
+      city: { $regex: new RegExp(`^${city}$`, "i") }, // matches both city user city and current city
+    }).populate("items");
 
-    if(!shops){
-      return res.status(400),json({message:"Shop not found"})
+    if (!shops) {
+      return res.status(400), json({ message: "Shop not found" });
     }
 
-    return res.status(200).json(shops)
-      } catch (error) {
+    return res.status(200).json(shops);
+  } catch (error) {
     return res.status(500).json({ message: `Get shop by city error ${error}` });
   }
-}
-
+};

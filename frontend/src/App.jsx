@@ -19,6 +19,8 @@ import CheckOut from './pages/CheckOut.jsx'
 import OrderPlaced from './pages/OrderPlaced.jsx'
 import MyOrders from './pages/MyOrders.jsx'
 import useGetMyOrders from './hooks/useGetMyOrders.jsx'
+import useUpdateLocation from './hooks/useUpdateLocation.jsx'
+import TrackOrderPage from './pages/TrackOrderPage.jsx'
 export const serverUrl = "http://localhost:3000"
 
 const App = () => {
@@ -29,6 +31,7 @@ const App = () => {
   useGetMyShop()
   useGetItemsByCity()
   useGetMyOrders()
+  useUpdateLocation()
   const {userData} = useSelector(state => state.user)
   return (
     <Routes>
@@ -43,6 +46,7 @@ const App = () => {
       <Route path='/checkout' element={userData ?  <CheckOut/> : <Navigate to={"/signin"} /> }/>
       <Route path='/order-placed' element={userData ?  <OrderPlaced/> : <Navigate to={"/signin"} /> }/>
       <Route path='/my-orders' element={userData ?  <MyOrders/> : <Navigate to={"/signin"} /> }/>
+      <Route path='/track-order/:orderId' element={userData ?  <TrackOrderPage/> : <Navigate to={"/signin"} /> }/>
 
       {/* // element={userData?<AddItem/>:<Navigate to={"/signin"}/> */}
 

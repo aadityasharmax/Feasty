@@ -69,7 +69,7 @@ const UserDashboard = () => {
 
 
   return (
-    <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-auto">
+    <div className="w-screen min-h-screen flex flex-col gap-5 items-center overflow-y-auto">
       <Nav />
 
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
