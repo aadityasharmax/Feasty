@@ -77,7 +77,7 @@
               {data.shopOrders.status}
             </span>{" "}
           </span>
-          <select
+          {data.shopOrders.status != "delivered" && <select
           // value={}
             onChange={(e) =>
               handleUpdateStatus(
@@ -92,7 +92,7 @@
             <option value="pending">Pending</option>
             <option value="preparing">Preparing</option>
             <option value="out for delivery">Out for delivery</option>
-          </select>
+          </select>}
         </div>
 
         {data.shopOrders.status == "out for delivery" && 

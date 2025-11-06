@@ -60,6 +60,21 @@ const shopOrderSchema = new mongoose.Schema(
     assignedDeliveryBoy : {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+
+    otpExpires : {
+      type:Date,
+      default:null
+    },
+
+    deliveryOtp:{
+      type:String,
+      default:null
+    },
+
+    deliveredAt:{
+      type:Date,
+      default:null
     }
 
 

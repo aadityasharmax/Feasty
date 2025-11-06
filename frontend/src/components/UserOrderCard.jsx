@@ -67,7 +67,7 @@ const UserOrderCard = ({ data }) => {
           </div>
 
           <div className="flex justify-between items-center border-t pt-2">
-            <p className="font-semibold ">Subtotal: {shopOrder.subTotal}</p>
+            <p className="font-semibold ">Subtotal: ₹{shopOrder.subTotal}</p>
             <span className="text-sm font-medium text-blue-600">
               {shopOrder.status}
             </span>
