@@ -3,6 +3,15 @@ import Order from "../models/order.model.js";
 import Shop from "../models/shop.model.js";
 import User from "../models/user.model.js";
 import { sendDeliveryOtpMail } from "../utils/mail.js";
+import Razorpay from "razorpay"
+import dotenv from "dotenv"
+
+dotenv.config()
+
+let instance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 export const placeOrder = async (req, res) => {
   try {
@@ -64,6 +73,10 @@ export const placeOrder = async (req, res) => {
         };
       })
     );
+
+    if(paymentMethod == "online"){
+      
+    }
 
     const newOrder = new Order({
       user: req.userId,
