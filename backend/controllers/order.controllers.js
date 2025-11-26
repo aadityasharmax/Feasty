@@ -75,10 +75,34 @@ export const placeOrder = async (req, res) => {
     );
 
     if(paymentMethod == "online"){
-      
+      const razorOrder = await instance.orders.create({
+        amount:Math.round(totalAmount*100),
+        currency:'INR',
+        receipt:`receipt_${Date.now()}`
+      })
+      const newOrder = new Order({
+      user: req.userId,
+      paymentMethod,
+      deliveryAddress,
+      totalAmount,
+      shopOrders,
+      razorpayOrderId:razorOrder.id,
+      payment:false
+    })
+
+    const savedOrder = await newOrder.save();
+
+
+    return res.status(200).json({
+      razorOrder,
+      orderId : savedOrder._id,
+
+    })
+
+
     }
 
-    const newOrder = new Order({
+    const newOrder =  new Order({
       user: req.userId,
       paymentMethod,
       deliveryAddress,
@@ -100,6 +124,39 @@ export const placeOrder = async (req, res) => {
     return res.status(500).json({ message: `Place order error ${error}` });
   }
 };
+
+
+export const verifyPayment = async(req,res) => {
+  try {
+    const {razorpay_payment_id, orderId} = req.body;
+    const payment = await instance.payments.fetch(razorpay_payment_id)
+    if(!payment || payment.status != "captured"){
+      return res.status(400).json({message:"payment not captured"})
+    }
+
+    const order = await Order.findById(orderId);
+    if(!order){
+       return res.status(400).json({message:"order not found"})
+    }
+
+    order.payment = true
+    order.razorpayPaymentId = razorpay_payment_id
+    await order.save()
+
+     await order.populate(
+      "shopOrders.shopOrderItems.item",
+      "name image price"
+    );
+    await order.populate("shopOrders.shop", "shopName");
+
+
+    return res.status(200).json(order)
+
+  } catch (error) {
+    return res.status(500).json({ message: `Verify payment error${error}` });
+  }
+}
+
 
 export const getMyOrders = async (req, res) => {
   try {
@@ -123,11 +180,12 @@ export const getMyOrders = async (req, res) => {
 
       const filteredOrder = orders.map((order) => ({
         id: order._id,
-        payentMethod: order.paymentMethod,
+        paymentMethod: order.paymentMethod,
         user: order.user,
         deliveryAddress: order.deliveryAddress,
         shopOrders: order.shopOrders.find((o) => o.owner._id == req.userId),
         createdAt: order.createdAt,
+        payment:order.payment
       }));
 
       console.log(orders);

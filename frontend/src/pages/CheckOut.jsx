@@ -95,16 +95,83 @@ const CheckOut = () => {
           latitude:location.latitude,
           longitude:location.longitude
         },
-        totalAmount,
+        totalAmount:amountwithDelivery,
         cartItems,
       },{withCredentials:true});
 
-      dispatch(addMyOrder(result.data.order))
+      if(paymentMethod == "cod"){
+        dispatch(addMyOrder(result.data.order))
       navigate("/order-placed")
+      }
+
+      else{
+        const orderId = result.data.orderId
+        const razorOrder = result.data.razorOrder
+        openRazorpayWindow(orderId, razorOrder)
+      }
+
+      
     } catch (error) {
       console.log(error)
     }
   }
+
+  const loadRazorpayScript = () => {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined") return reject(new Error("window is undefined"));
+    if (window.Razorpay) return resolve(true);
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => reject(new Error("Failed to load Razorpay script"));
+    document.body.appendChild(script);
+  });
+};
+
+const openRazorpayWindow = async (orderId, razorOrder) => {
+  try {
+    await loadRazorpayScript();
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: razorOrder.amount, // amount in paise
+      currency: "INR",
+      name: "Feasty",
+      description: "Food Delivery Website",
+      order_id: razorOrder.id,
+      handler: async function (response) {
+        try {
+          const result = await axios.post(
+            `${serverUrl}/api/order/verify-payment`,
+            {
+              razorpay_payment_id: response.razorpay_payment_id,
+              orderId,
+            },
+            { withCredentials: true }
+          );
+          dispatch(addMyOrder(result.data.order));
+          navigate("/order-placed");
+        } catch (error) {
+          console.error("Payment verification error:", error);
+        }
+      },
+      modal: {
+        // optional: control behavior on dismiss
+        ondismiss: function () {
+          console.log("Razorpay modal closed");
+        },
+      },
+    };
+
+    // create instance and open
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (err) {
+    console.error("Failed to open Razorpay window:", err);
+    // optionally show toast / user message here
+  }
+};
 
   useEffect(() => {
     setAddressInput(address);
