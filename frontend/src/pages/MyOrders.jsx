@@ -1,4 +1,7 @@
 import React from 'react'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { setMyOrders, updateRealTimeOrderStatus } from '../redux/userSlice.js'
 import { useSelector } from 'react-redux'
 import { IoChevronBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
@@ -7,10 +10,28 @@ import OwnerOrderCard from '../components/OwnerOrderCard.jsx';
 
 
 
+
 const MyOrders = () => {
 
   const navigate = useNavigate();
-  const {userData, myOrders} = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+  const {userData, myOrders, socket} = useSelector((state) => state.user)
+
+  useEffect(() => {
+    socket?.on('newOrder',(data) => {
+      console.log("Received newOrder:", data);
+      if(data.shopOrders?.owner._id == userData._id){
+        dispatch(setMyOrders([data,...myOrders]))
+      }
+    })
+
+
+    return () => {
+      socket?.off('newOrder')
+    }
+  },[socket])
+
+
   return (
     <div className='w-full min-h-screen bg-[#fff9f6] flex justify-center px-4'>
       <div className=' w-full max-w-[800px] p-4'>

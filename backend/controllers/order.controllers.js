@@ -102,6 +102,10 @@ export const placeOrder = async (req, res) => {
 
     }
 
+
+    // cod payment 
+
+
     const newOrder =  new Order({
       user: req.userId,
       paymentMethod,
@@ -115,6 +119,29 @@ export const placeOrder = async (req, res) => {
       "name image price"
     );
     await newOrder.populate("shopOrders.shop", "shopName");
+    await newOrder.populate("shopOrders.owner", "fullName socketId")
+    await newOrder.populate("user", "fullName email mobile")
+
+    const io = req.app.get('io')
+
+    if(io){
+      newOrder.shopOrders.forEach(shopOrder => {
+        const ownerSocketId = shopOrder.owner.socketId
+        if(ownerSocketId){
+          io.to(ownerSocketId).emit('newOrder',{
+              _id:newOrder._id,
+              paymentMethod:newOrder.paymentMethod,
+              user:newOrder.user,
+              shopOrders:shopOrder,
+              createdAt:newOrder.createdAt,
+              deliveryAddress:newOrder.deliveryAddress,
+              payment:newOrder.payment          
+          })
+        }
+      })
+    }
+
+
 
     const savedOrder = await newOrder.save();
     return res
@@ -143,11 +170,32 @@ export const verifyPayment = async(req,res) => {
     order.razorpayPaymentId = razorpay_payment_id
     await order.save()
 
-     await order.populate(
+    await order.populate(
       "shopOrders.shopOrderItems.item",
       "name image price"
     );
     await order.populate("shopOrders.shop", "shopName");
+    await order.populate("shopOrders.owner", "fullName socketId")
+    await order.populate("user", "fullName email mobile")
+
+    const io = req.app.get('io')
+
+    if(io){
+      order.shopOrders.forEach(shopOrder => {
+        const ownerSocketId = shopOrder.owner.socketId
+        if(ownerSocketId){
+          io.to(ownerSocketId).emit('newOrder',{
+              _id:order._id,
+              paymentMethod:order.paymentMethod,
+              user:order.user,
+              shopOrders:shopOrder,
+              createdAt:order.createdAt,
+              deliveryAddress:order.deliveryAddress,
+              payment:order.payment          
+          })
+        }
+      })
+    }
 
 
     return res.status(200).json(order)

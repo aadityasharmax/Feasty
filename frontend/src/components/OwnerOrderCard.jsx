@@ -10,7 +10,6 @@ import Order from "../../../backend/models/order.model";
 const OwnerOrderCard = ({ data }) => {
   const [availableBoys, setAvailableBoys] = useState([]);
   const dispatch = useDispatch();
-   console.log("OwnerOrderCard data:", data);
   const handleUpdateStatus = async (orderId, shopId, status) => {
     try {
       const result = await axios.post(
@@ -38,9 +37,13 @@ const OwnerOrderCard = ({ data }) => {
         </p>
 
         {data?.paymentMethod == "online" ? (
-          <p className="gap-2 text-sm text-gray-600">payment: {data.payment ? "true" : "false"}</p>
+          <p className="gap-2 text-sm text-gray-600">
+            payment: {data.payment ? "true" : "false"}
+          </p>
         ) : (
-          <p className="gap-2 text-sm text-gray-600">Payment method : {data?.paymentMethod}</p>
+          <p className="gap-2 text-sm text-gray-600">
+            Payment method : {data?.paymentMethod}
+          </p>
         )}
       </div>
 

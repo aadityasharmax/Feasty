@@ -53,6 +53,16 @@ const userSchema = new mongoose.Schema(
 
     otpExpires : {
       type:Date
+    },
+
+    socketId:{
+      type:String,
+      default:"",
+    },
+
+    isOnline:{
+      type:Boolean,
+      default:false
     }
 
 
