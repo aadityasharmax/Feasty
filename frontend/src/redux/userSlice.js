@@ -82,7 +82,7 @@ const userSlice = createSlice({
 
     updateRealTimeOrderStatus:(state,action) => {
       const {orderId, shopId, status} = action.payload
-      const order = state.myOrders.find(o => o.id == orderId)
+      const order = state.myOrders.find(o => o._id == orderId)
       if(order){
         const shopOrder = order.shopOrders.find(so => so.shop._id == shopId)
         if(shopOrder){
