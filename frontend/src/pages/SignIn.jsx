@@ -33,7 +33,7 @@ const SignIn = () => {
         },{withCredentials: true});
         setLoading(false)
         setError("")  
-        dispatch(setUserData(result.data))
+        dispatch(setUserData(result.data.user))
         navigate('/')
     } catch (error) {
       setError(error.response.data.message);
@@ -51,7 +51,7 @@ const SignIn = () => {
         const axiosResult = await axios.post(`${serverUrl}/api/auth/googleauth`,{
           email: result.user.email, 
       },{withCredentials: true});
-      dispatch(setUserData(axiosResult.data))
+      dispatch(setUserData(axiosResult.data.user))
       setError("")
       navigate('/')
       } catch (error) {
