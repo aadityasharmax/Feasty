@@ -10,7 +10,7 @@ const UserOrderCard = ({ data }) => {
 
   const [selectedRating, setSelectedRating] = useState({}) // itemId:rating
   if (!data) return null;
-  console.log("order data", data);
+  // console.log("order data", data);
 
   // Show date in  valid format DD/MM/YYYY
   const formatDate = (dateString) => {

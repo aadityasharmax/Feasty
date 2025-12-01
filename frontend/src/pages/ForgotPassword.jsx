@@ -29,7 +29,7 @@ const ForgotPassword = () => {
    const handleVerifyOtp = async () => {
     try {
         const result = await axios.post(`${serverUrl}/api/auth/verifyotp`,{email,otp},{ withCredentials:true })
-        console.log(result)
+        // console.log(result)
 
         setStep(3)
     } catch (error) {
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
 
     try {
         const result = await axios.post(`${serverUrl}/api/auth/resetpassword`,{email,newPassword},{ withCredentials:true })
-        console.log(result)
+        // console.log(result)
 
         setStep(3)
     } catch (error) {

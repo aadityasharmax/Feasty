@@ -19,14 +19,14 @@ const MyOrders = () => {
 
   useEffect(() => {
     socket?.on('newOrder',(data) => {
-      console.log("Received newOrder:", data);
+      // console.log("Received newOrder:", data);
       if(data.shopOrders?.owner._id == userData._id){
         dispatch(setMyOrders([data,...myOrders]))
       }
     })
 
     socket?.on('update-status',({orderId, shopId, status, userId}) => {
-      console.log("Received update-status:", {orderId, shopId, status, userId});
+      // console.log("Received update-status:", {orderId, shopId, status, userId});
       if(userData.role === 'owner' && userData._id == userId){
         dispatch(updateRealTimeOrderStatus({orderId, shopId, status}))
       } else if(userData.role === 'user' && userData._id == userId){

@@ -73,7 +73,7 @@ const CheckOut = () => {
           addressInput
         )}&apiKey=${apiKey}`
       );
-      console.log(result);
+      // console.log(result);
       dispatch(
         setLocation({
           latitude: result.data.features[0].properties.lat,
@@ -159,7 +159,7 @@ const openRazorpayWindow = async (orderId, razorOrder) => {
       modal: {
         // optional: control behavior on dismiss
         ondismiss: function () {
-          console.log("Razorpay modal closed");
+          // console.log("Razorpay modal closed");
         },
       },
     };

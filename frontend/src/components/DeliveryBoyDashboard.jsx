@@ -85,7 +85,7 @@ const DeliveryBoyDashboard = () => {
           withCredentials: true,
         }
       )
-      console.log(result.data)
+      // console.log(result.data)
 
       setCurrentOrder(result.data);
     } catch (error) {
@@ -102,7 +102,7 @@ const DeliveryBoyDashboard = () => {
         }
       );
 
-      console.log(result.data);
+      // console.log(result.data);
       await getCurrentOrder();
     } catch (error) {
       console.log(error);
@@ -125,7 +125,7 @@ const DeliveryBoyDashboard = () => {
       setLoading(false)
       
       setShowOtpBox(true);
-      console.log(result.data);
+      // console.log(result.data);
     } catch (error) {
       console.log(error);
       setLoading(false)
@@ -164,7 +164,7 @@ const DeliveryBoyDashboard = () => {
         }
       );
 
-      console.log(result.data);
+      // console.log(result.data);
       setTodayDeliveries(result.data)
     } catch (error) {
       console.log(error);
