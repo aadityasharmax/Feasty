@@ -4,11 +4,15 @@ import { IoChevronBackSharp } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { serverUrl } from "../App";
 import DeliveryBoyTracking from "../components/DeliveryBoyTracking";
+import { useSelector } from "react-redux";
 
 const TrackOrderPage = () => {
   const { orderId } = useParams();
   const [currentOrder, setCurrentOrder] = useState();
   const navigate = useNavigate();
+
+  const {socket} = useSelector((state) => state.user)
+  const [liveLocation, setLiveLocation] = useState({})
   const handleGetOrder = async () => {
     try {
       const result = await axios.get(
@@ -20,6 +24,15 @@ const TrackOrderPage = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    socket.on('updateDeliveryLocation',({deliveryBoyId, latitude, longitude}) => {
+      setLiveLocation((prev) => ({
+        ...prev,
+        [deliveryBoyId]:{latitude,longitude}
+      }))
+  })
+  },[socket])
 
   useEffect(() => {
     handleGetOrder();
@@ -83,7 +96,8 @@ const TrackOrderPage = () => {
             <div className="h-[400px] w-full rounded-2xl overflow-hidden shadow-md">
               <DeliveryBoyTracking
                 data={{
-                  deliveryBoyLocation: {
+                  deliveryBoyLocation: liveLocation[shopOrder.assignedDeliveryBoy._id] ||  {
+                    
                     latitude:
                       shopOrder.assignedDeliveryBoy.location.coordinates[1],
 

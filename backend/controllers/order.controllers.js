@@ -315,7 +315,10 @@ export const updateOrderStatus = async (req, res) => {
         shopOrderId: shopOrder._id,
         broadcastedTo: candidates,
         status: "broadcasted",
-      });
+      })
+
+      await deliveryAssignment.populate('order')
+      await deliveryAssignment.populate('shop')
 
       shopOrder.assignedDeliveryBoy = deliveryAssignment.assignedTo;
       shopOrder.assignment = deliveryAssignment._id;
@@ -326,7 +329,26 @@ export const updateOrderStatus = async (req, res) => {
         longitude: b.location.coordinates?.[0],
         latitude: b.location.coordinates?.[1],
         mobile: b.mobile,
-      }));
+      }))
+
+      const io = req.app.get('io')
+
+      if(io){
+        availableRider.forEach(boy => {
+          const boySocketId = boy.socketId
+          if(boySocketId){
+            io.to(boySocketId).emit('newAssignment',{
+              sentTo:boy._id,
+              assignmentId:deliveryAssignment._id,
+              orderId:deliveryAssignment.order._id,
+              shopName:deliveryAssignment.shop.shopName,
+              deliveryAddress:deliveryAssignment.order.deliveryAddress,
+              items:deliveryAssignment.order.shopOrders.find(so => so._id.equals(deliveryAssignment.shopOrderId)).shopOrderItems || [],
+              subTotal:deliveryAssignment.order.shopOrders.find(so => so._id.equals(deliveryAssignment.shopOrderId)).subTotal
+            })
+          }
+        })
+      }
     }
 
     // delivery assignment
@@ -406,6 +428,7 @@ export const getDeliveryBoyAssignment = async (req, res) => {
 export const acceptOrder = async (req, res) => {
   try {
     const { assignmentId } = req.params;
+    console.log("acceptOrder called:", { assignmentId, userId: req.userId });
     const assignment = await DeliveryAssignment.findById(assignmentId);
 
     if (!assignment) {
@@ -432,6 +455,8 @@ export const acceptOrder = async (req, res) => {
     assignment.acceptedAt = new Date();
 
     await assignment.save();
+       // confirm saved
+    console.log("assignment after save:", assignment);
 
     const order = await Order.findById(assignment.order);
 
@@ -458,6 +483,7 @@ export const acceptOrder = async (req, res) => {
 
 export const getCurrentOrder = async (req, res) => {
   try {
+    console.log("getCurrentOrder req.userId:", req.userId);
     const assignment = await DeliveryAssignment.findOne({
       assignedTo: req.userId,
       status: "assigned",
@@ -592,8 +618,7 @@ export const verifyDeliveryOtp = async (req, res) => {
     }
 
     if (
-      shopOrder.deliveryOtp != otp ||
-      !shopOrder.otpExpires ||
+      shopOrder.deliveryOtp != otp  ||
       shopOrder.otpExpires < Date.now()
     ) {
       return res.status(400).json({ message: "Invalid/Expired otp" });
@@ -613,3 +638,53 @@ export const verifyDeliveryOtp = async (req, res) => {
      return res.status(500).json({ message: `verify delivery otp error ${error}` });
   }
 };
+
+
+
+export const getTodayDeliveries = async(req,res) => {
+  try {
+    const deliveryBoyId = req.userId;
+    const startOfDay = new Date();
+    startOfDay.setHours(0,0,0,0);
+    const endOfDay = new Date();
+    endOfDay.setHours(23,59,59,999);
+
+    const orders = await Order.find({
+      "shopOrders.assignedDeliveryBoy":deliveryBoyId,
+      "shopOrders.status":"delivered",
+      "shopOrders.deliveredAt":{$gte:startOfDay ,$lte:endOfDay}
+    }).lean()
+
+    let todayDeliveries = []
+
+    orders.forEach(order => {
+      order.shopOrders.forEach(shopOrder => {
+        if(shopOrder.assignedDeliveryBoy == deliveryBoyId && shopOrder.status == "delivered" && shopOrder.deliveredAt && shopOrder.deliveredAt >= startOfDay){
+          todayDeliveries.push(shopOrder)
+        }
+      })
+    })
+
+    let stats = {}
+
+    todayDeliveries.forEach(shopOrder => {
+      const hour = new Date(shopOrder.deliveredAt).getHours()
+
+      stats[hour] = (stats[hour] || 0 ) + 1
+    })
+
+
+    let formattedStats = Object.keys(stats).map(hour => ({
+      hour:parseInt(hour),
+      count:stats[hour]
+    }))
+
+    formattedStats.sort((a,b) => a.hour - b.hour)
+
+    return res.status(200).json(formattedStats)
+
+    
+  } catch (error) {
+    return res.status(500).json({ message: `today delivery error ${error}` });
+  }
+}

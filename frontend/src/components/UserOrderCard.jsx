@@ -1,8 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { serverUrl } from "../App";
+
 
 const UserOrderCard = ({ data }) => {
   const navigate = useNavigate();
+
+  const [selectedRating, setSelectedRating] = useState({}) // itemId:rating
   if (!data) return null;
   console.log("order data", data);
 
@@ -15,6 +21,20 @@ const UserOrderCard = ({ data }) => {
       year: "numeric",
     });
   };
+
+  const handleRating = async (itemId, rating) => {
+    try {
+     await axios.post(`${serverUrl}/api/item/rating`,{itemId,rating},{withCredentials:true})
+
+      setSelectedRating((prev) => ({
+        ...prev,
+        [itemId]:rating
+
+      }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const shortId = data._id ? data._id.slice(-6) : "------";
   return (
@@ -68,6 +88,15 @@ const UserOrderCard = ({ data }) => {
                 <p className="text-xs text-gray-500 ">
                   Quantity: {item.quantity} x ₹{item.price}
                 </p>
+
+                {shopOrder.status === "delivered" && <div className="flex space-x-1 mt-2">
+                  {[1,2,3,4,5].map((star) => (
+                    <button className={`${selectedRating[item.item._id] >= star ? 'text-yellow-400 text-lg':'text-gray-400 text-lg'}`}
+                    onClick={() => handleRating(item.item._id,star)  } 
+                    key={star}
+                    >★</button>
+                  ))}
+                </div> }
               </div>
             ))}
           </div>

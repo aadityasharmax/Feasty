@@ -5,7 +5,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch } from "react-redux";
 import { updateOrderStatus } from "../redux/userSlice";
-import Order from "../../../backend/models/order.model";
+
 
 const OwnerOrderCard = ({ data }) => {
   const [availableBoys, setAvailableBoys] = useState([]);
@@ -60,7 +60,7 @@ const OwnerOrderCard = ({ data }) => {
           {data.shopOrders.shopOrderItems.map((item, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-40 border rounded-lg p-2 bg-white"
+              className="shrink-0 w-40 border rounded-lg p-2 bg-white"
             >
               <img
                 src={item.item.image}

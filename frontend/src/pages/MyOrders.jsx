@@ -46,7 +46,7 @@ const MyOrders = () => {
     <div className='w-full min-h-screen bg-[#fff9f6] flex justify-center px-4'>
       <div className=' w-full max-w-[800px] p-4'>
         <div
-                className="absolute flex gap-10 top-[20px] left-[20px] z-[10] cursor-pointer"
+                className="absolute flex gap-10 top-5 left-5 z-10 cursor-pointer"
                 onClick={() => navigate("/")}
               >
                 <IoChevronBackSharp size={35} className="text-[#ff4d2d]" />

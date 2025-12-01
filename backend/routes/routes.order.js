@@ -6,6 +6,7 @@ import {
   getDeliveryBoyAssignment,
   getMyOrders,
   getOrderById,
+  getTodayDeliveries,
   placeOrder,
   sendDeliveryOtp,
   updateOrderStatus,
@@ -25,6 +26,7 @@ orderRoutes.get("/get-assignments", isAuth, getDeliveryBoyAssignment);
 orderRoutes.get("/accept-order/:assignmentId", isAuth, acceptOrder);
 orderRoutes.get("/get-current-order", isAuth, getCurrentOrder);
 orderRoutes.get("/get-order-by-id/:orderId", isAuth, getOrderById);
+orderRoutes.get("/get-today-deliveries", isAuth, getTodayDeliveries);
 
 
 export default orderRoutes;
