@@ -5,7 +5,7 @@ import { setMyOrders, updateRealTimeOrderStatus } from '../redux/userSlice.js'
 import { useSelector } from 'react-redux'
 import { IoChevronBackSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-import UserOrderCard from '../components/userOrderCard.jsx';
+import UserOrderCard from '../components/UserOrderCard.jsx';
 import OwnerOrderCard from '../components/OwnerOrderCard.jsx';
 
 
