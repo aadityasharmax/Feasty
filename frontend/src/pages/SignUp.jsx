@@ -34,7 +34,7 @@ const SignUp = () => {
         const result = await axios.post(`${serverUrl}/api/auth/signup`,{
             fullName, email, mobile, password, role
         },{withCredentials: true});
-        dispatch(setUserData(result.data))
+        dispatch(setUserData(result.data.user))
         setError("")
         setLoading(false)
         navigate('/signin')
@@ -61,7 +61,7 @@ const handleGoogleAuth = async () => {
         mobile, 
         role
     },{withCredentials: true});
-    dispatch(setUserData(axiosResult.data))
+    dispatch(setUserData(axiosResult.data.user))
     setError("")
     // navigate('/')
     } catch (error) {
