@@ -22,7 +22,7 @@ import useGetMyOrders from './hooks/useGetMyOrders.jsx'
 import useUpdateLocation from './hooks/useUpdateLocation.jsx'
 import TrackOrderPage from './pages/TrackOrderPage.jsx'
 import Shop from './pages/Shop.jsx'
-export const serverUrl = "http://localhost:3000"
+export const serverUrl = "https://feasty-backend-7209.onrender.com"
 import { io } from 'socket.io-client'
 import { setSocket } from './redux/userSlice.js'
 
