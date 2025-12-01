@@ -76,7 +76,7 @@ const PORT = process.env.PORT || 5000;
 // Configure socket.io with CORS and transports
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'https://feasty.onrender.com',
     credentials: true,
     methods: ['GET', 'POST']
   },
